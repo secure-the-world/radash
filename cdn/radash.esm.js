@@ -932,6 +932,9 @@ const template = (str, data, regex = /\{\{(.+?)\}\}/g) => {
 const trim = (str, charsToTrim = " ") => {
   if (!str)
     return "";
+  if (typeof charsToTrim !== "string" || charsToTrim.length > 100) {
+    throw new TypeError("charsToTrim must be a string with length <= 100");
+  }
   const toTrim = charsToTrim.replace(/[\W]{1}/g, "\\$&");
   const regex = new RegExp(`^[${toTrim}]+|[${toTrim}]+$`, "g");
   return str.replace(regex, "");
