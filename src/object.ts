@@ -222,6 +222,9 @@ export const get = <TDefault = unknown>(
     if (current === undefined) return defaultValue as TDefault
     const dequoted = key.replace(/['"]/g, '')
     if (dequoted.trim() === '') continue
+    if (dequoted === '__proto__' || dequoted === 'constructor' || dequoted === 'prototype') {
+      return defaultValue as TDefault
+    }
     current = current[dequoted]
   }
   if (current === undefined) return defaultValue as TDefault
@@ -248,10 +251,16 @@ export const set = <T extends object, K>(
   const _set = (node: any) => {
     if (segments.length > 1) {
       const key = segments.shift() as string
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        return {} as T
+      }
       const nextIsNum = /^\d+$/.test(segments[0])
       node[key] = node[key] === undefined ? (nextIsNum ? [] : {}) : node[key]
       _set(node[key])
     } else {
+      if (segments[0] === '__proto__' || segments[0] === 'constructor' || segments[0] === 'prototype') {
+        return {} as T
+      }
       node[segments[0]] = value
     }
   }
