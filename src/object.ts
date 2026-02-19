@@ -252,14 +252,14 @@ export const set = <T extends object, K>(
     if (segments.length > 1) {
       const key = segments.shift() as string
       if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-        return
+        return {} as T
       }
       const nextIsNum = /^\d+$/.test(segments[0])
       node[key] = node[key] === undefined ? (nextIsNum ? [] : {}) : node[key]
       _set(node[key])
     } else {
       if (segments[0] === '__proto__' || segments[0] === 'constructor' || segments[0] === 'prototype') {
-        return
+        return {} as T
       }
       node[segments[0]] = value
     }
